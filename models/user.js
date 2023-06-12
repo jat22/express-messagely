@@ -14,9 +14,6 @@ class User {
    */
 
   static async register({username, password, first_name, last_name, phone}) {
-    if(!username || !password || !first_name || !last_name || !phone){
-      throw new ExpressError('Please enter all required information', 400)
-    }
     try{
       const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
       const result = await db.query(`
@@ -31,15 +28,11 @@ class User {
         return new ExpressError('Username is taken. Please select another', 400)
       }
     }
-
    }
 
   /** Authenticate: is this username/password valid? Returns boolean. */
 
   static async authenticate(username, password) {
-    if(!username || !password){
-      throw new ExpressError('Please enter username and password', 400)
-    }
     const result = await db.query(`
       SELECT password FROM users
       WHERE username=$1`, [username]);
